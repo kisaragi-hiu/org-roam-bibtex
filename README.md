@@ -138,9 +138,11 @@ the file manually.
 
 ### Spacemacs
 
-Assuming `org-roam` is installed via a private layer as described
-[here](https://org-roam.readthedocs.io/en/master/installation/#spacemacs),
-add `org-roam-bibtex` to `org-roam-packages:
+Most probably you already have a private `org-roam` layer, if not, see examples
+[here](https://org-roam.discourse.group/t/orb-helm-bibtex-open-notes-wont-create-new-note/690)
+and
+[here](https://www.reddit.com/r/emacs/comments/f6erh0/total_noob_how_do_i_install_orgroam_in_spacemacs/).
+Add `org-roam-bibtex` to `org-roam-packages`:
 
 ``` el
 (defconst org-roam-packages
@@ -148,7 +150,7 @@ add `org-roam-bibtex` to `org-roam-packages:
 
 ```
 
-and this after `org-roam/init-org-roam`:
+add this after `org-roam/init-org-roam`:
 
 ``` el
 (defun org-roam/init-org-roam-bibtex ()
@@ -434,12 +436,16 @@ fullcite:%\1
 You can also use a function to generate the template on the fly, see
 `org-capture-templates` for details.
 
-#### Org-noter integration `%(orb-process-file-field \"${=key=}\")`
+#### Org-noter integration.  Special treatment of the "file" keyword
 
-The convenience function `orb-process-file-field` allows to find
-documents associated with the BibTeX entry.  It is intended to be used
-in a template via a `%`-escape form for sexp (`%(sexp)`).  See
-`org-capture-templates` for details.
+If `orb-process-file-keyword` is non-nil, the "file" field will be treated
+specially.  If the field contains only one file name, its value will be used
+for template expansion.  If it contains several file names, the user will be
+prompted to choose one.  The file names can be filtered based on their
+extensions by setting the `orb-file-field-extensions` variable, so that only
+those matching the extension or extensions will be considered for retrieval.
+The "file" keyword must be set for preformatting as usual.  Consult the
+docstrings of these variables for additional customization options.
 
 Below shows how this can be used to integrate with
 [org-noter](https://github.com/weirdNox/org-noter) or
@@ -447,7 +453,9 @@ Below shows how this can be used to integrate with
 
 ```el
 (setq orb-preformat-keywords
-   '(("citekey" . "=key=") "title" "url" "file" "author-or-editor" "keywords"))
+      '("citekey" "title" "url" "author-or-editor" "keywords" "file")
+      orb-process-file-field t
+      orb-file-field-extensions "pdf")
 
 (setq orb-templates
       '(("r" "ref" plain (function org-roam-capture--get-point)
@@ -463,7 +471,7 @@ Below shows how this can be used to integrate with
 :Custom_ID: ${citekey}
 :URL: ${url}
 :AUTHOR: ${author-or-editor}
-:NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
+:NOTER_DOCUMENT: ${file}
 :NOTER_PAGE:
 :END:")))
 ```
