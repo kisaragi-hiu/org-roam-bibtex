@@ -7,7 +7,7 @@
 ;;         Leo Vivier <leo.vivier+dev@gmail.com>
 ;; URL: https://github.com/org-roam/org-roam-bibtex
 ;; Keywords: org-mode, roam, convenience, bibtex, helm-bibtex, ivy-bibtex, org-ref
-;; Version: 0.2.3
+;; Verstion 0.3.1
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -395,7 +395,7 @@ This function is used internally by `orb-autokey-generate-key'."
                                                 "\\|") "\\)\\'"))
                   (words ()))
               (setq result (dolist (word result (nreverse words))
-                             (unless (string-match-p ignore-rx words)
+                             (unless (string-match-p ignore-rx word)
                                (push word words))))))
           ;; 2. take number of words equal to WORDS if that is set
           ;; or just the first word; also 0 = 1.
